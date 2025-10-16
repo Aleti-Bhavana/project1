@@ -1,9 +1,19 @@
-const sqlite3 = require('sqlite3').verbose();
-const path = require('path');
+import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
 
-const db = new sqlite3.Database(path.join(__dirname, '../../database/database.sqlite'), (err) => {
-    if (err) console.error(err.message);
-    else console.log('Connected to SQLite database');
+dotenv.config();
+
+export const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: "./backend/database/database.sqlite",
+  logging: false,
 });
 
-module.exports = db;
+export const connectDB = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log("✅ Database connected!");
+  } catch (err) {
+    console.error("❌ Database connection error:", err);
+  }
+};

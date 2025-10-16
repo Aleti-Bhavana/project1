@@ -1,15 +1,21 @@
-import axios from 'axios';
+import axios from "axios";
 
 const API = axios.create({
-    baseURL: 'http://localhost:5000/api/v1', // backend URL
+  baseURL: "http://localhost:5000/api/v1",
 });
 
-// Auth APIs
-export const register = (data) => API.post('/auth/register', data);
-export const login = (data) => API.post('/auth/login', data);
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
-// Task APIs (protected)
-export const getTasks = (token) => API.get('/tasks', { headers: { Authorization: `Bearer ${token}` }});
-export const createTask = (token, data) => API.post('/tasks', data, { headers: { Authorization: `Bearer ${token}` }});
-export const updateTask = (token, id, data) => API.put(`/tasks/${id}`, data, { headers: { Authorization: `Bearer ${token}` }});
-export const deleteTask = (token, id) => API.delete(`/tasks/${id}`, { headers: { Authorization: `Bearer ${token}` }});
+// Auth
+export const register = (data) => API.post("/auth/register", data);
+export const login = (data) => API.post("/auth/login", data);
+
+// Tasks
+export const getTasks = () => API.get("/tasks");
+export const createTask = (data) => API.post("/tasks", data);
+export const updateTask = (id, data) => API.put(`/tasks/${id}`, data);
+export const deleteTask = (id) => API.delete(`/tasks/${id}`);

@@ -1,23 +1,27 @@
-import { useState } from 'react';
-import Login from './components/Login';
-import Register from './components/Register';
-import Dashboard from './components/Dashboard';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AuthPage from "./pages/AuthPage";
+import Dashboard from "./pages/Dashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
-    const [token, setToken] = useState(localStorage.getItem('token') || null);
-    const [view, setView] = useState('login'); // login/register
+  return (
+    <Router>
+      <Routes>
+      
+        <Route path="/" element={<AuthPage />} />
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        setToken(null);
-        setView('login');
-    };
-
-    if (token) return <Dashboard token={token} logout={logout} />;
-
-    return view === 'login' 
-        ? <Login setToken={setToken} setView={setView} /> 
-        : <Register setView={setView} />;
+        
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

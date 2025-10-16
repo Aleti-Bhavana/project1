@@ -1,16 +1,20 @@
 // src/routes/taskRoutes.js
-const express = require('express');
+import express from "express";
+import {
+  createTask,
+  getTasks,
+  updateTask,
+  deleteTask
+} from "../controllers/taskController.js";
+import authenticate from "../middleware/authMiddleware.js";
+import authorize from "../middleware/roleMiddleware.js";
+
 const router = express.Router();
-const { authenticate } = require('../middleware/authMiddleware');
-const { authorize } = require('../middleware/roleMiddleware');
-const { createTask, getTasks, updateTask, deleteTask } = require('../controllers/taskController');
 
-// All task routes are protected
-router.use(authenticate);
+router.use(authenticate); // JWT required
+router.get("/", getTasks);
+router.post("/", createTask);
+router.put("/:id", updateTask);
+router.delete("/:id", authorize(["Admin"]), deleteTask);
 
-router.get('/', getTasks);
-router.post('/', createTask);
-router.put('/:id', updateTask);
-router.delete('/:id', authorize('Admin'), deleteTask); // Only Admin can delete
-
-module.exports = router;
+export default router;

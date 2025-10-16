@@ -1,24 +1,12 @@
-const db = require('../config/db');
+import { DataTypes } from "sequelize";
+import { sequelize } from "../config/db.js";
+import { User } from "./userModel.js";
 
-const Task = {
-    create: (task, callback) => {
-        const { title, description, userId } = task;
-        const sql = `INSERT INTO tasks (title, description, userId) VALUES (?, ?, ?)`;
-        db.run(sql, [title, description, userId], function(err) {
-            callback(err, this.lastID);
-        });
-    },
-    getAll: (callback) => db.all(`SELECT * FROM tasks`, callback),
-    getById: (id, callback) => db.get(`SELECT * FROM tasks WHERE id = ?`, [id], callback),
-    update: (id, task, callback) => {
-        const { title, description } = task;
-        db.run(`UPDATE tasks SET title = ?, description = ? WHERE id = ?`, [title, description, id], function(err) {
-            callback(err, this.changes);
-        });
-    },
-    delete: (id, callback) => db.run(`DELETE FROM tasks WHERE id = ?`, [id], function(err) {
-        callback(err, this.changes);
-    })
-};
+export const Task = sequelize.define("Task", {
+  title: { type: DataTypes.STRING, allowNull: false },
+  description: { type: DataTypes.STRING, allowNull: true },
+});
 
-module.exports = Task;
+// Relationships
+Task.belongsTo(User, { foreignKey: "userId" });
+User.hasMany(Task, { foreignKey: "userId" });

@@ -1,50 +1,64 @@
-// src/controllers/taskController.js
 const Task = require('../models/taskModel');
 
-// Create a new task
-const createTask = (req, res, next) => {
-    try {
-        const { title, description } = req.body;
-        if (!title) return res.status(400).json({ message: "Title is required" });
-
-        Task.create({ title, description, userId: req.user.id }, (err, id) => {
-            if (err) return next(err);
-            res.status(201).json({ id, title, description });
-        });
-    } catch (err) {
-        next(err);
-    }
+// Create a task
+const createTask = async (req, res) => {
+  try {
+    const task = await Task.create({ ...req.body, userId: req.user.id });
+    res.status(201).json(task);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
+  }
 };
 
-// Get all tasks
-const getTasks = (req, res, next) => {
-    Task.getAll((err, tasks) => {
-        if (err) return next(err);
-        res.json(tasks);
-    });
+// Get all tasks of logged-in user (or all for Admin if needed)
+const getTasks = async (req, res) => {
+  try {
+    let tasks;
+    if (req.user.role === 'Admin') {
+      tasks = await Task.findAll({ include: 'User' }); // Admin sees all tasks
+    } else {
+      tasks = await Task.findAll({ where: { userId: req.user.id } }); // User sees only own tasks
+    }
+    res.json(tasks);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 // Update a task
-const updateTask = (req, res, next) => {
-    const { id } = req.params;
-    const { title, description } = req.body;
+const updateTask = async (req, res) => {
+  try {
+    const task = await Task.findByPk(req.params.id);
+    if (!task) return res.status(404).json({ message: 'Task not found' });
 
-    Task.update(id, { title, description }, (err, changes) => {
-        if (err) return next(err);
-        if (changes === 0) return res.status(404).json({ message: "Task not found" });
-        res.json({ message: "Task updated" });
-    });
+    // Allow if user is Admin OR owner of the task
+    if (req.user.role !== 'Admin' && task.userId !== req.user.id) {
+      return res.status(403).json({ message: 'Forbidden: Only owner or Admin can update' });
+    }
+
+    await task.update(req.body);
+    res.json(task);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
-// Delete a task (Admin only)
-const deleteTask = (req, res, next) => {
-    const { id } = req.params;
+// Delete a task
+const deleteTask = async (req, res) => {
+  try {
+    const task = await Task.findByPk(req.params.id);
+    if (!task) return res.status(404).json({ message: 'Task not found' });
 
-    Task.delete(id, (err, changes) => {
-        if (err) return next(err);
-        if (changes === 0) return res.status(404).json({ message: "Task not found" });
-        res.json({ message: "Task deleted" });
-    });
+    // Allow if user is Admin OR owner of the task
+    if (req.user.role !== 'Admin' && task.userId !== req.user.id) {
+      return res.status(403).json({ message: 'Forbidden: Only owner or Admin can delete' });
+    }
+
+    await task.destroy();
+    res.json({ message: 'Task deleted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };
 
 module.exports = { createTask, getTasks, updateTask, deleteTask };
