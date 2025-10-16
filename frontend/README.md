@@ -1,70 +1,64 @@
-# Getting Started with Create React App
+# Fullstack Project: User Auth + Task Management
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Overview
 
-## Available Scripts
+This project is a fullstack application built with React.js (frontend) and Node.js + Express + Sequelize + SQLite (backend).
 
-In the project directory, you can run:
+Features include user registration and login with JWT authentication, a protected dashboard accessible only to logged-in users, and task CRUD operations. All users can create and edit tasks. Only Admin users can delete tasks.
 
-### `npm start`
+# Project Structure:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Frontend (React.js)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+The frontend folder contains a public folder and a src folder. Inside src, there is a components folder with TaskForm.js and ProtecedRoute.js, a pages folder with AuthPage.js (registration/login) and Dashboard.js (tasks dashboard), a services folder with api.js for Axios API calls, App.js, and index.js. The frontend folder also contains package.json and README.md.
 
-### `npm test`
+Backend (Node.js + Express)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The backend folder contains a src folder with a config folder for db.js (Sequelize + SQLite config), a controllers folder with authController.js and taskController.js, a middleware folder with authMiddleware.js and roleMiddleware.js, a models folder with userModel.js and taskModel.js, and a routes folder with authRoutes.js and taskRoutes.js. The backend folder also contains a database folder with database.sqlite, a .env file, server.js, and package.json.
 
-### `npm run build`
+# Setup Instructions:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Backend
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Navigate to the backend folder using cd backend.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Install dependencies using npm install.
 
-### `npm run eject`
+Create a .env file with the following content:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+PORT=5000
+JWT_SECRET=mysecretkey
+FRONTEND_ORIGIN=http://localhost:3000
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Frontend:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Navigate to the frontend folder using cd frontend.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Install dependencies using npm install.
 
-## Learn More
+Install jwt-decode using npm install jwt-decode.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Run the React app using npm start. The app runs on http://localhost:3000
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Usage
 
-### Code Splitting
+Open http://localhost:3000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Register a new user with a role of User or Admin. After registration, the app automatically goes to the Login page.
 
-### Analyzing the Bundle Size
+Login with the registered credentials to access the Dashboard. On the Dashboard, users can add and edit tasks. Only Admin users can delete tasks.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+* Notes
 
-### Making a Progressive Web App
+JWT authentication is stored in localStorage after login and used in Axios requests to access protected routes.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+SQLite is used for simplicity. The database file is located at backend/database/database.sqlite.
 
-### Advanced Configuration
+Task permissions: all users can edit tasks, only Admins can delete tasks.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+* Dependencies:
 
-### Deployment
+Backend dependencies include express, sequelize, sqlite3, bcryptjs, jsonwebtoken, dotenv, and cors.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Frontend dependencies include react, axios, and jwt-decode.
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
