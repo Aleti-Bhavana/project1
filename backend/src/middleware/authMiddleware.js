@@ -1,5 +1,5 @@
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 dotenv.config();
 
 const authenticate = (req, res, next) => {
@@ -7,7 +7,7 @@ const authenticate = (req, res, next) => {
   if (!token) return res.status(401).json({ message: "Unauthorized" });
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "mysecretkey");
     req.user = decoded;
     next();
   } catch (err) {
@@ -15,4 +15,4 @@ const authenticate = (req, res, next) => {
   }
 };
 
-export default authenticate;
+module.exports = authenticate;

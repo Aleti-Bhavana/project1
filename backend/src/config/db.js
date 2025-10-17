@@ -1,15 +1,14 @@
-import { Sequelize } from "sequelize";
-import dotenv from "dotenv";
-
+const { Sequelize } = require("sequelize");
+const dotenv = require("dotenv");
 dotenv.config();
 
-export const sequelize = new Sequelize({
+const sequelize = new Sequelize({
   dialect: "sqlite",
   storage: "./backend/database/database.sqlite",
-  logging: false,
+  logging: console.log, // enable logging for debug
 });
 
-export const connectDB = async () => {
+const connectDB = async () => {
   try {
     await sequelize.authenticate();
     console.log("✅ Database connected!");
@@ -17,3 +16,5 @@ export const connectDB = async () => {
     console.error("❌ Database connection error:", err);
   }
 };
+
+module.exports = { sequelize, connectDB };

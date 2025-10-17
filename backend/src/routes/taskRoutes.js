@@ -1,20 +1,26 @@
-// src/routes/taskRoutes.js
-import express from "express";
-import {
+const express = require("express");
+const {
   createTask,
   getTasks,
   updateTask,
-  deleteTask
-} from "../controllers/taskController.js";
-import authenticate from "../middleware/authMiddleware.js";
-import authorize from "../middleware/roleMiddleware.js";
+  deleteTask,
+} = require("../controllers/taskController");
+const authenticate = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.use(authenticate); // JWT required
+router.use(authenticate);
 router.get("/", getTasks);
 router.post("/", createTask);
 router.put("/:id", updateTask);
-router.delete("/:id", authorize(["Admin"]), deleteTask);
 
-export default router;
+router.delete("/:id", async (req, res, next) => {
+  if (req.user.role !== "Admin") {
+    return res.status(403).json({ message: "Forbidden: Only Admin can delete tasks" });
+  }
+  next();
+}, deleteTask);
+
+
+
+module.exports = router;
