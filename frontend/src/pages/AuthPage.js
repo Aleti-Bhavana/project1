@@ -10,7 +10,7 @@ const AuthPage = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/v1/auth/register", {
+      await axios.post("https://favourite-lhgt.onrender.com/api/v1/auth/register", {
         username,
         password,
         role,
@@ -28,7 +28,7 @@ const AuthPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/v1/auth/login", {
+      const res = await axios.post("https://favourite-lhgt.onrender.com/api/v1/auth/login", {
         username,
         password,
       });
